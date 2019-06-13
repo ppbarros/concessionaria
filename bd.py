@@ -44,3 +44,4 @@ def show_all_cars(cursor):
     cursor.execute(f'select * from carros')
     carros = cursor.fetchall()
     return carros
+

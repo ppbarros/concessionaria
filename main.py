@@ -12,7 +12,7 @@ upload_dir = ('static')
 makedirs(upload_dir, exist_ok=True)
 
 app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'GabiPP!7)9!7'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'root'
 app.config['MYSQL_DATABASE_DB'] = 'concessionaria'
 
 
