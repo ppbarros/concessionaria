@@ -12,36 +12,47 @@
 
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="/">PP Motors</a>
+    <a class="navbar-brand" href="/">PP Motors</a>
     <form class="form-inline my-2 my-lg-0" action="/buscar">
-      <input class="form-control mr-sm-2" type="search" placeholder="Buscar" aria-label="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
+        <input class="form-control mr-sm-2" type="search" placeholder="Buscar" aria-label="Search">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
     </form>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
 
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="/">Home</a>
-      </li>
-      <li class="nav-item">
-        {% if logado %}
-          <a class="nav-link" href="/logout">Logout</a>
-        {% else %}
-          <a class="nav-link" href="/login">Login Funcionário</a>
-          {% endif %}
-      </li>
-    </ul>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/">Home</a>
+            </li>
 
-  </div>
+            {% if logado %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/user/gerente">Minha conta</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Alterar Carros</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/relatorio">Relatório de Carros</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">Logout</a>
+                {% else %}
+                    <a class="nav-link" href="/login">Login Funcionário</a>
+                </li>
+            {% endif %}
+
+        </ul>
+
+    </div>
 
 </nav>
 
 
 <div class="container">
-    <br>
+<br>
 </div>
 
 
@@ -50,15 +61,15 @@
 {% if vips %}
 <div class="container">
     <div class="row">
-    {% for v in vips %}
-    <div class="col-4">
-        <img src="{{url_for('static', filename=v[3])}}" class="img-fluid" alt="">
-        <p>{{v[1].capitalize()}} {{v[2].capitalize()}}</p>
-        <h4>Preço R$ {{v[4]}}</h4>
-        <a href="/reservar/{{v[0]}}" class="btn btn-primary">Reservar</a>
+        {% for v in vips %}
+            <div class="col-4">
+                <img src="{{url_for('static', filename=v[3])}}" class="img-fluid" alt="">
+                <p>{{v[1].capitalize()}} {{v[2].capitalize()}}</p>
+                <h4>Preço R$ {{v[4]}}</h4>
+                <a href="/reservar/{{v[0]}}" class="btn btn-primary">Reservar</a>
 
-    </div>
-    {% endfor %}
+            </div>
+        {% endfor %}
     </div>
 </div>
 {% endif %}

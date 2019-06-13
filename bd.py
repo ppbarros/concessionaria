@@ -3,12 +3,6 @@ def set_car(conn, cursor, marca, modelo, foto, preco, placa, vip):
     conn.commit()
 
 
-def show_foto(cursor, idimg):
-    cursor.execute(f'select image from teste where idteste={idimg}')
-    foto = cursor.fetchone()
-    return foto[0]
-
-
 def vip_verifie(cursor):
     cursor.execute(f'select count(*) from carros where vip = 1')
     vips = cursor.fetchone()
@@ -18,7 +12,7 @@ def vip_verifie(cursor):
 
 
 def show_vips(cursor):
-    cursor.execute(f'select idcarros, marca, modelo, path_ft, preco from carros where vip = 1')
+    cursor.execute(f'select idcarros, marca, modelo, path_ft, preco from carros where vip = 1 and idcomp is NULL')
     vips = cursor.fetchall()
     return vips
 
@@ -32,3 +26,21 @@ def validate_login(cursor, user, passwd):
         return tipo, nome
     else:
         return None
+
+
+def reservar_carro(conn, cursor, nome, cpf, tel, idcarros):
+    cursor.execute(f'select idcomp from comp where cpf = "{cpf}";')
+    existe = cursor.fetchone()
+    if existe is None:
+        cursor.execute(f'insert into comp (nome, cpf, tel) values ("{nome}", "{cpf}", "{tel}");')
+        conn.commit()
+    cursor.execute(f'select idcomp from comp where cpf = "{cpf}";')
+    idcomp = cursor.fetchone()[0]
+    cursor.execute(f'update carros set idcomp = {idcomp} where idcarros = {idcarros}')
+    conn.commit()
+
+
+def show_all_cars(cursor):
+    cursor.execute(f'select * from carros')
+    carros = cursor.fetchall()
+    return carros

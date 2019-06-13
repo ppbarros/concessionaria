@@ -8,11 +8,54 @@
 </head>
 <body>
 
+
 {% if erro %}
 <div class="alert alert-danger" role="alert">
   {{ erro }}
 </div>
 {% endif %}
+
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/">PP Motors</a>
+    <form class="form-inline my-2 my-lg-0" action="/buscar">
+        <input class="form-control mr-sm-2" type="search" placeholder="Buscar" aria-label="Search">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
+    </form>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+
+            {% if logado %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/user/gerente">Minha conta</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Alterar Carros</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/relatorio">Relatório de Carros</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">Logout</a>
+                {% else %}
+                    <a class="nav-link" href="/login">Login Funcionário</a>
+                </li>
+            {% endif %}
+
+        </ul>
+
+    </div>
+
+</nav>
+
+
 
 
 <form action="/validate_login" method="post">

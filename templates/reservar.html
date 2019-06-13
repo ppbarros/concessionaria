@@ -8,7 +8,6 @@
 </head>
 <body>
 
-
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="/">PP Motors</a>
     <form class="form-inline my-2 my-lg-0" action="/buscar">
@@ -48,10 +47,12 @@
 
 </nav>
 
-
-Vendedor {{nome}}<br>
-<a href="/cadastro_carro">Cadastrar Veículo</a><br>
-
+<form action="/efetuar_reserva/{{idcarros}}">
+    <label for="idnome">Nome: </label><input type="text" id="idnome" name="nome" required><br>
+    <label for="idcpf">CPF: </label><input type="text" id="idcpf" name="cpf" required><br>
+    <label for="idtel">Telefone: </label><input type="text" id="idtel" name="tel" required><br>
+    <input type="submit" value="Reservar">
+</form>
 
 </body>
 </html>
