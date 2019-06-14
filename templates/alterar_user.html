@@ -56,34 +56,58 @@
 
 </nav>
 
-
 <div class="container">
-<h1>Carros VIPs</h1>
+<h1>Alterar Cadastro de Funcionário</h1>
 </div>
 
-
-
-
-{% if vips %}
 <div class="container">
-    <div class="row">
-        {% for v in vips %}
-            <div class="col-4">
-                <img src="{{url_for('static', filename=v[3])}}" class="img-fluid" alt="">
-                <p>{{v[1].capitalize()}} {{v[2].capitalize()}}</p>
-                <h4>Preço R$ {{v[4]}}</h4>
-                <a href="/reservar/{{v[0]}}" class="btn btn-primary">Reservar</a>
+    <table class="table table-striped table-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Nome</th>
+            <th scope="col">Tipo</th>
+            <th scope="col">Exlcuir</th>
 
-            </div>
+        </tr>
+        {% for u in users %}
+        <tr>
+            <th scope="row">{{loop.index}}</th>
+            <td>{{u[4]}}</td>
+            {% if u[3] == 1%}
+                <td><div class="dropdown">
+                          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuLinkGer" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Gerente
+                          </button>
+
+                          <div class="dropdown-menu" aria-labelledby="dropdownMenuLinkGer">
+                                <a class="dropdown-item disabled" href="#">Gerente</a>
+                                <a class="dropdown-item" href="/tornar_vendedor/{{u[0]}}">Vendedor</a>
+                          </div>
+                    </div>
+                </td>
+            {% else %}
+                <td><div class="dropdown">
+                          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuLinkVen" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Vendedor
+                          </button>
+
+                          <div class="dropdown-menu" aria-labelledby="dropdownMenuLinkVen">
+                                <a class="dropdown-item" href="/tornar_gerente/{{u[0]}}">Gerente</a>
+                                <a class="dropdown-item  disabled" href="#">Vendedor</a>
+                          </div>
+                    </div>
+                </td>
+            {% endif %}
+
+            <td>
+                <a href="/excluir/u{{[0]}}" class="btn btn-primary">Excluir</a>
+            </td>
+
+
+        </tr>
         {% endfor %}
-    </div>
+    </table>
 </div>
-{% endif %}
-
-
-
-
-
 
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

@@ -58,21 +58,21 @@
 
 
 <div class="container">
-<h1>Carros VIPs</h1>
+<h1>Carros Disponíveis para Venda</h1>
 </div>
 
 
 
 
-{% if vips %}
+{% if cars %}
 <div class="container">
     <div class="row">
-        {% for v in vips %}
+        {% for c in cars %}
             <div class="col-4">
-                <img src="{{url_for('static', filename=v[3])}}" class="img-fluid" alt="">
-                <p>{{v[1].capitalize()}} {{v[2].capitalize()}}</p>
+                <img src="{{url_for('static', filename=c[3])}}" class="img-fluid" alt="">
+                <p>{{c[1].capitalize()}} {{c[2].capitalize()}}</p>
                 <h4>Preço R$ {{v[4]}}</h4>
-                <a href="/reservar/{{v[0]}}" class="btn btn-primary">Reservar</a>
+                <a href="/reservar/{{c[0]}}" class="btn btn-primary">Reservar</a>
 
             </div>
         {% endfor %}

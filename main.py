@@ -16,9 +16,17 @@ app.config['MYSQL_DATABASE_PASSWORD'] = 'root'
 app.config['MYSQL_DATABASE_DB'] = 'concessionaria'
 
 
+
 # verificar se o funcionário está logado type 1 = gerente / type 0 = vendedor
 login_type = None
 login_name = None
+
+fconn = bd.connect()
+fcursor = fconn.cursor()
+create_first_user(fconn, fcursor)
+fcursor.close()
+fconn.close()
+
 
 @app.route('/')
 def home(erro=None):
@@ -80,6 +88,9 @@ def login():
     conn.close()
     global login_type
     global login_name
+    if usuario is None:
+        erro = 'Login e Senha não conferem!'
+        return redirect(url_for('login_template', erro=erro, logado=login_type))
     login_type = usuario[0]
     login_name = usuario[1]
     if login_type == 0:
@@ -88,7 +99,7 @@ def login():
         return redirect(url_for('home_gerente', logado=login_type))
     else:
         erro = 'Login e Senha não conferem!'
-        return redirect(url_for('login_template.html', erro=erro, logado=login_type))
+        return redirect(url_for('login_template', erro=erro, logado=login_type))
 
 
 @app.route('/user/gerente')
@@ -148,6 +159,181 @@ def all_cars():
         return render_template('relatorio.html', carros=carros, logado=login_type)
     else:
         return redirect(url_for('home'))
+
+
+@app.route('/alterar_carro')
+def available_cars():
+    if login_type:
+        conn = bd.connect()
+        cursor = conn.cursor()
+        carros = show_available_cars(cursor)
+        cursor.close()
+        conn.close()
+        return render_template('alterar_carro.html', carros=carros, logado=login_type)
+    else:
+        return redirect(url_for('home'))
+
+
+@app.route('/cadastrar_usuario')
+def cadastro_user():
+    if login_type == 1:
+        return render_template('inserir_user.html', logado=login_type)
+    else:
+        return redirect(url_for('home'))
+
+
+@app.route('/cadastro_user', methods=['post'])
+def inserir_user():
+    user = request.form.get('login')
+    senha = request.form.get('passwd')
+    nome = request.form.get('nome')
+    tipo = request.form.get('tipo')
+    conn = bd.connect()
+    cursor = conn.cursor()
+    create_user(conn, cursor, user, senha, tipo, nome)
+    cursor.close()
+    conn.close()
+    return redirect(url_for('home'))
+
+
+@app.route('/limpar_reserva/<idcarros>')
+def excluir_reserva(idcarros):
+    if login_type:
+        conn = bd.connect()
+        cursor = conn.cursor()
+        limpar_reserva(conn, cursor, idcarros)
+        cursor.close()
+        conn.close()
+        return redirect(url_for('available_cars'))
+    else:
+        return redirect(url_for('home'))
+
+
+@app.route('/tornar_vip/<idcarros>')
+def tornar_vip(idcarros):
+    if login_type:
+        conn = bd.connect()
+        cursor = conn.cursor()
+        set_vip(conn, cursor, idcarros)
+        cursor.close()
+        conn.close()
+        return redirect(url_for('available_cars'))
+    else:
+        return redirect(url_for('home'))
+
+
+@app.route('/tornar_normal/<idcarros>')
+def tornar_normal(idcarros):
+    if login_type:
+        conn = bd.connect()
+        cursor = conn.cursor()
+        unset_vip(conn, cursor, idcarros)
+        cursor.close()
+        conn.close()
+        return redirect(url_for('available_cars'))
+    else:
+        return redirect(url_for('home'))
+
+
+@app.route('/alterar_preco/<idcarros>', methods=['post'])
+def alterar_preco(idcarros):
+    preco = request.form.get('preco')
+    if login_type:
+        conn = bd.connect()
+        cursor = conn.cursor()
+        update_preco(conn, cursor, idcarros, preco)
+        cursor.close()
+        conn.close()
+        return redirect(url_for('available_cars'))
+    else:
+        return redirect(url_for('home'))
+
+
+@app.route('/alterar_usuario')
+def usuarios():
+    if login_type == 1:
+        conn = bd.connect()
+        cursor = conn.cursor()
+        users = show_users(cursor)
+        cursor.close()
+        conn.close()
+        return render_template('alterar_user.html', logado=login_type, users=users)
+    else:
+        return redirect(url_for('home'))
+
+
+@app.route('/tornar_gerente/<iduser>')
+def set_gerente(iduser):
+    if login_type == 1:
+        conn = bd.connect()
+        cursor = conn.cursor()
+        tornar_gerente(conn, cursor, iduser)
+        cursor.close()
+        conn.close()
+        return redirect(url_for('usuarios'))
+    else:
+        return redirect(url_for('home'))
+
+
+@app.route('/tornar_vendedor/<iduser>')
+def set_vendedor(iduser):
+    if login_type == 1:
+        conn = bd.connect()
+        cursor = conn.cursor()
+        tornar_vendedor(conn, cursor, iduser)
+        cursor.close()
+        conn.close()
+        return redirect(url_for('usuarios'))
+    else:
+        return redirect(url_for('home'))
+
+
+
+@app.route('/excluir/<iduser>')
+def delete_user(iduser):
+    if login_type == 1:
+        conn = bd.connect()
+        cursor = conn.cursor()
+        excluir_user(conn, cursor, iduser)
+        cursor.close()
+        conn.close()
+        return redirect(url_for('usuarios'))
+    else:
+        return redirect(url_for('home'))
+
+
+@app.route('/all_cars')
+def home(erro=None):
+    conn = bd.connect()
+    cursor = conn.cursor()
+    cars = show_available_cars_comp(cursor)
+    cursor.close()
+    conn.close()
+    return render_template('carros_disponiveis.html', cars=cars, logado=login_type, erro=erro)
+
+
+@app.route('/vendidos')
+def unavailable_cars():
+    if login_type:
+        conn = bd.connect()
+        cursor = conn.cursor()
+        carros = show_unavailable_cars(cursor)
+        cursor.close()
+        conn.close()
+        return render_template('relatorio.html', carros=carros, logado=login_type)
+    else:
+        return redirect(url_for('home'))
+
+
+@app.route('/buscar', methods=['get'])
+def busca():
+    pesquisa = request.form.get('buscar')
+    conn = bd.connect()
+    cursor = conn.cursor()
+    cars = buscar_carro(cursor, pesquisa)
+    cursor.close()
+    conn.close()
+    return render_template('pesquisa.html', cars=cars, logado=login_type)
 
 
 if __name__ == '__main__':
