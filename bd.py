@@ -61,9 +61,7 @@ def show_unavailable_cars(cursor):
 def create_first_user(conn, cursor):
     cursor.execute(f'select count(*) from usuarios')
     qnt = cursor.fetchone()
-    if qnt is None:
-        qnt = 0
-    if qnt == 0:
+    if qnt[0] == 0:
         cursor.execute(f'insert into usuarios (login, senha, tipo, nome) values ("admin", "admin", 1, "admin")')
         conn.commit()
 
