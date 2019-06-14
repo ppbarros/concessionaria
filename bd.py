@@ -100,12 +100,12 @@ def show_users(cursor):
 
 
 def tornar_gerente(conn, cursor, iduser):
-    cursor.execute(f'update usuarios tipo = 1 where idusuarios = {iduser}')
+    cursor.execute(f'update usuarios set tipo = 1 where idusuarios = {iduser}')
     conn.commit()
 
 
 def tornar_vendedor(conn, cursor, iduser):
-    cursor.execute(f'update usuarios tipo = 0 where idusuarios = {iduser}')
+    cursor.execute(f'update usuarios set tipo = 0 where idusuarios = {iduser}')
     conn.commit()
 
 
@@ -115,12 +115,12 @@ def excluir_user(conn, cursor, iduser):
 
 
 def show_available_cars_comp(cursor):
-    cursor.execute(f'select * from carros where vendido = 0 and idcom is NULL')
+    cursor.execute(f'select * from carros where vendido = 0 and idcomp is NULL')
     carros = cursor.fetchall()
     return carros
 
 
 def buscar_carro(cursor, buscar):
-    cursor.execute(f'select * from carros where nome = "{buscar}" or marca = "{buscar}"')
+    cursor.execute(f'select * from carros where idcomp is NULL and vendido = 0 and (modelo = "{buscar}" or marca = "{buscar}")')
     pesquisa = cursor.fetchall()
     return pesquisa

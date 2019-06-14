@@ -61,15 +61,16 @@ def inserir():
     cursor = conn.cursor()
     foto.save(path.join(upload_dir, secure_filename(foto.filename)))
     vips = vip_verifie(cursor)
-    if vips >= 10:
+    if vips > 10 and vip == '1':
         alerta = 'Não é possível adicionar mais de 10 carros como VIP'
         cursor.close()
         conn.close()
-        return redirect(url_for('incersao', erro=alerta, logado=login_type))
-    set_car(conn, cursor, marca, modelo, foto.filename, preco, placa, vip)
-    cursor.close()
-    conn.close()
-    return redirect(url_for('insercao', logado=login_type))
+        return redirect(url_for('insercao', erro=alerta, logado=login_type))
+    else:
+        set_car(conn, cursor, marca, modelo, foto.filename, preco, placa, vip)
+        cursor.close()
+        conn.close()
+        return redirect(url_for('insercao', logado=login_type))
 
 
 @app.route('/login')
@@ -162,14 +163,14 @@ def all_cars():
 
 
 @app.route('/alterar_carro')
-def available_cars():
+def available_cars(erro=None):
     if login_type:
         conn = bd.connect()
         cursor = conn.cursor()
         carros = show_available_cars(cursor)
         cursor.close()
         conn.close()
-        return render_template('alterar_carro.html', carros=carros, logado=login_type)
+        return render_template('alterar_carro.html', carros=carros, logado=login_type, erro=erro)
     else:
         return redirect(url_for('home'))
 
@@ -214,10 +215,16 @@ def tornar_vip(idcarros):
     if login_type:
         conn = bd.connect()
         cursor = conn.cursor()
-        set_vip(conn, cursor, idcarros)
+        vips = vip_verifie(cursor)
+        alerta = None
+        if vips > 10:
+            print(vips)
+            alerta = 'Não é possível adicionar mais de 10 carros como VIP'
+        else:
+            set_vip(conn, cursor, idcarros)
         cursor.close()
         conn.close()
-        return redirect(url_for('available_cars'))
+        return redirect(url_for('available_cars', erro=alerta))
     else:
         return redirect(url_for('home'))
 
@@ -303,7 +310,7 @@ def delete_user(iduser):
 
 
 @app.route('/all_cars')
-def home(erro=None):
+def all_cars_available(erro=None):
     conn = bd.connect()
     cursor = conn.cursor()
     cars = show_available_cars_comp(cursor)
@@ -320,14 +327,15 @@ def unavailable_cars():
         carros = show_unavailable_cars(cursor)
         cursor.close()
         conn.close()
-        return render_template('relatorio.html', carros=carros, logado=login_type)
+        return render_template('vendidos.html', carros=carros, logado=login_type)
     else:
         return redirect(url_for('home'))
 
 
 @app.route('/buscar', methods=['get'])
 def busca():
-    pesquisa = request.form.get('buscar')
+    pesquisa = request.args.get('buscar')
+    print(pesquisa)
     conn = bd.connect()
     cursor = conn.cursor()
     cars = buscar_carro(cursor, pesquisa)
