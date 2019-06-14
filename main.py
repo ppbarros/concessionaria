@@ -12,7 +12,7 @@ upload_dir = ('static')
 makedirs(upload_dir, exist_ok=True)
 
 app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'root'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'GabiPP!7)9!7'
 app.config['MYSQL_DATABASE_DB'] = 'concessionaria'
 
 
@@ -136,7 +136,7 @@ def logout():
 def reservar(idcarros):
     return render_template('reservar.html', idcarros=idcarros)
 
-@app.route('/efetuar_reserva/<idcarros>')
+@app.route('/efetuar_reserva/<idcarros>', methods=['post'])
 def efetuar_reserva(idcarros):
     nome = request.form.get('nome')
     cpf = request.form.get('cpf')
@@ -342,6 +342,19 @@ def busca():
     cursor.close()
     conn.close()
     return render_template('pesquisa.html', cars=cars, logado=login_type)
+
+
+@app.route('/reservados')
+def all_reserved_cars():
+    if login_type:
+        conn = bd.connect()
+        cursor = conn.cursor()
+        reserv = show_reservas(cursor)
+        cursor.close()
+        conn.close()
+        return render_template('reservados.html', reserv=reserv, logado=login_type)
+    else:
+        return redirect(url_for('home'))
 
 
 if __name__ == '__main__':

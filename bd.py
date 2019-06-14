@@ -124,3 +124,9 @@ def buscar_carro(cursor, buscar):
     cursor.execute(f'select * from carros where idcomp is NULL and vendido = 0 and (modelo = "{buscar}" or marca = "{buscar}")')
     pesquisa = cursor.fetchall()
     return pesquisa
+
+
+def show_reservas(cursor):
+    cursor.execute(f'select * from carros, comp where carros.idcomp is not NULL and comp.idcomp = carros.idcomp')
+    reservados = cursor.fetchall()
+    return reservados
